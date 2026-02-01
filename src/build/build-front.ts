@@ -109,7 +109,7 @@ async function fixCssLightDark(cssPaths: string[]) {
       await Bun.write(
         path,
         (await file.text()).replaceAll(
-          /var\(--buncss-light, ?([^)]+\)?)\) var\(--buncss-dark, ?([^)]+\)?)\)/g,
+          /var\(--buncss-light, ?([^)]+\)?)\) ?var\(--buncss-dark, ?([^)]+\)?)\)/g,
           'light-dark($1, $2)'
         )
       )
