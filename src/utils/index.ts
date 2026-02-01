@@ -41,7 +41,7 @@ function getConfigVar<T extends string | undefined>(
   return parseArgs(name) ?? getBunEnv()[name] ?? (defaultValue as T)
 }
 
-function getConfigVars<T extends {[key: string]: string}>(defaults?: T) {
+function getConfigVars<T extends {[key: string]: string}>(defaults?: T): T {
   const defaultVars = defaults ?? ({} as T)
   const pattern = /^--/
   const argvs = Bun.argv

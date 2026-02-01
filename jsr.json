@@ -1,8 +1,12 @@
 {
   "name": "@voldemortas/server",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "license": "MIT",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./route": "./src/route/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
   "imports": {
     "src/": "./src/",
     "back/": "./src/back/",
@@ -12,12 +16,10 @@
   "publish": {
     "include": [
       "./src/",
-      "./README.md",
-      "./tsconfig.json"
+      "./README.md"
     ],
     "exclude": [
-      "./test/",
-      "!dist"
+      "./test/"
     ]
   },
   "nodeModulesDir": "auto"
