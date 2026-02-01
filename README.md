@@ -19,17 +19,18 @@ To add it to your bun project run `bunx jsr add @voldemortas/server`.
 ## Documentation
 
 For a quick example refer to the [test/e2e/](test/e2e) directory (ignore the `tests/` directory). You can also consult
-[Voldemortas/kalbynas](https://github.com/Voldemortas/kalbynas) which uses this project.
+[Voldemortas/kalbynas](https://github.com/Voldemortas/kalbynas) which uses this project. Or
+use [Voldemortas/server-template](https://github.com/Voldemortas/server-template) as a fresh template.
 
 -----
 
 ### Wrapper
 
-Wrapper (`import {wrapper} from '@voldemortas/server/'`) is used to `watch`, `build`, `serve` the server.
+Wrapper (`import {wrapper} from '@voldemortas/server'`) is used to `watch`, `build`, `serve` the server.
 
 ```ts
 //index.ts
-import {wrap} from '@voldemortas/server/'
+import {wrap} from '@voldemortas/server'
 import routes from './routes.ts'
 
 await wrap({
@@ -122,7 +123,7 @@ third parameter is optional if you don't want to set the headers.
 //server.ts
 //too lazy to write documentation for this so just used this
 
-import Server from '@voldemortas/server/'
+import Server from '@voldemortas/server'
 import routes from './routes'
 
 const server = new Server({
