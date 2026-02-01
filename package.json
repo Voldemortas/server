@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "type": "module",
   "peerDependencies": {
     "typescript": "^5",
@@ -33,6 +33,7 @@
         "types": "./dist/utils/index.d.ts",
         "default": "./dist/utils/index.js"
       }
-    }
+    },
+    "./package.json": "./package.json"
   }
 }
