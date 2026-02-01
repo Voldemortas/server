@@ -12,9 +12,9 @@ yourself:
 
 ## Requirements and installation
 
-The project requires `bun` (v1.3.1 and above) and that's it, it installs `react` as a peer dependency
+The project requires `bun` (v1.3.1 and above), `sass`, `react` and `react-dom`.
 
-To add it to your bun project run `bunx jsr add @voldemortas/server`.
+To add it to your bun project run ` bunx jsr add @voldemortas/server; bun add react react-dom`.
 
 ## Documentation
 
