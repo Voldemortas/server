@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "type": "module",
   "peerDependencies": {
     "typescript": "^5",
@@ -14,5 +14,25 @@
     "sass": "^1.89.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./route": {
+      "import": {
+        "types": "./dist/route/index.d.ts",
+        "default": "./dist/route/index.js"
+      }
+    },
+    "./utils": {
+      "import": {
+        "types": "./dist/utils/index.d.ts",
+        "default": "./dist/utils/index.js"
+      }
+    }
   }
 }

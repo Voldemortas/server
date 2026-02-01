@@ -12,7 +12,7 @@ yourself:
 
 ## Requirements and installation
 
-The project requires `bun` (v1.22.17 and above) and that's it, it installs `react` as a peer dependency
+The project requires `bun` (v1.3.1 and above) and that's it, it installs `react` as a peer dependency
 
 To add it to your bun project run `bunx jsr add @voldemortas/server`.
 
@@ -25,11 +25,11 @@ For a quick example refer to the [test/e2e/](test/e2e) directory (ignore the `te
 
 ### Wrapper
 
-Wrapper (`import {wrapper} from 'server'`) is used to `watch`, `build`, `serve` the server.
+Wrapper (`import {wrapper} from '@voldemortas/server/'`) is used to `watch`, `build`, `serve` the server.
 
 ```ts
 //index.ts
-import {wrap} from 'server'
+import {wrap} from '@voldemortas/server/'
 import routes from './routes.ts'
 
 await wrap({
@@ -68,8 +68,8 @@ Right now there are 3 kinds of routes:
 Used to return a simple any kind of response, be it JSON, txt or even html if you dare to write it on your own!
 
 ```ts
-import {BackRoute} from 'server/route'
-import {jsonHeaders} from 'server/utils'
+import {BackRoute} from '@voldemortas/server/route'
+import {jsonHeaders} from '@voldemortas/server/utils'
 
 export const backRoute = new BackRoute('/url', (req: Request, params: any) => {
   return new Response(JSON.stringify(params), jsonHeaders)
@@ -85,7 +85,7 @@ Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the conte
 #### ReactRoute
 
 ```ts
-import {ReactRoute} from 'server/route'
+import {ReactRoute} from '@voldemortas/server/route'
 
 export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx', (req: Request, params: any) => ({
   h1: 'dis is h1',
@@ -105,7 +105,7 @@ as shown below in the commented section - you ain't usin' the `request` there an
 #### RedirectRoute
 
 ```ts
-import {RedirectRoute} from 'server/route'
+import {RedirectRoute} from '@voldemortas/server/route'
 
 export const redirectRoute = new RedirectRoute('/global.css', '/static/global.css', ['headers', '{"content-type": "text/css"}'])
 // also equals to
@@ -122,7 +122,7 @@ third parameter is optional if you don't want to set the headers.
 //server.ts
 //too lazy to write documentation for this so just used this
 
-import Server from 'server'
+import Server from '@voldemortas/server/'
 import routes from './routes'
 
 const server = new Server({

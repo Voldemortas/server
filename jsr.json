@@ -1,6 +1,6 @@
 {
   "name": "@voldemortas/server",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "license": "MIT",
   "exports": "./src/index.ts",
   "imports": {
@@ -11,7 +11,8 @@
   },
   "publish": {
     "include": [
-      "./src/"
+      "./src/",
+      "./README.md"
     ],
     "exclude": [
       "./test/"
