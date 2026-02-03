@@ -3,6 +3,7 @@ import {describe, it, expect} from 'bun:test'
 const DATE = '2020-02-19T23:14:25.989Z'
 const LABAS = 'labas'
 const PONG = 'pong'
+const BANG = 'bang'
 
 describe('backend test', () => {
   it(`returns date on /date`, async () => {
@@ -18,6 +19,17 @@ describe('backend test', () => {
   it(`returns pong on /ping`, async () => {
     const value = await (await fetch('http://localhost:9900/ping')).text()
     expect(value).toBe(PONG)
+  })
+  it(`returns pong on /bing`, async () => {
+    const value = await (await fetch('http://localhost:9900/bing')).text()
+    expect(value).toBe(BANG)
+  })
+  it(`returns the same text on /repeat`, async () => {
+    const string = 'asgdfg45659sfsd'
+    const value = await (
+      await fetch('http://localhost:9900/repeat/' + string)
+    ).text()
+    expect(value).toBe(string)
   })
   it('has the global css existing', async () => {
     const file = await fetch('http://localhost:9900/global.css')

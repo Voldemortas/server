@@ -27,7 +27,7 @@ export default async function renderReact(
     )
     .replaceAll(
       'const globalParams = undefined',
-      `const globalParams = ${JSON.stringify(page.resolver(request, page.params))}`
+      `const globalParams = ${JSON.stringify(page.resolver(request, page))}`
     )
     .replaceAll(/placeholderPath.css/g, `${path}.css?hash=${hash}`)
     .replaceAll(/placeholderPath.js/g, `${path}.js?hash=${hash}`)

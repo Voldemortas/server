@@ -23,13 +23,13 @@ type HeadersType = {
 export type RouteType = 'react' | 'redirect' | 'back'
 
 export abstract class Route {
-  public readonly url: string
+  public readonly url: string | RegExp
   public readonly params: any[]
   public readonly type: RouteType
   private preHeaders: HeadersType = {}
   private postHeaders: HeadersType = {}
 
-  protected constructor(url: string, params: any[], type: RouteType) {
+  protected constructor(url: string | RegExp, params: any[], type: RouteType) {
     this.url = url
     this.params = params
     this.type = type
@@ -52,16 +52,23 @@ export abstract class Route {
   protected getPostHeaders(): HeadersType {
     return {...this.postHeaders}
   }
+
+  public isMatchingPathname(pathname: string): boolean {
+    return (
+      (typeof this.url === 'string' && this.url === pathname) ||
+      (this.url instanceof RegExp && this.url.test(pathname))
+    )
+  }
 }
 
 export class ReactRoute extends Route {
   public readonly reactPath: string
-  public readonly resolver: (request: Request, params: any) => any
+  public readonly resolver: (request: Request, route: ReactRoute) => any
 
   public constructor(
-    url: string,
+    url: string | RegExp,
     reactPath: string,
-    resolver: ((request: Request, params: any) => any) | any,
+    resolver: ((request: Request, route: ReactRoute) => any) | any,
     params: any[] = []
   ) {
     super(url, params, 'react')
@@ -86,14 +93,21 @@ export class ReactRoute extends Route {
     super.setPostHeaders(headers)
     return this
   }
+
+  public override isMatchingPathname(pathname: string): boolean {
+    return super.isMatchingPathname(pathname)
+  }
 }
 
 export class BackRoute extends Route {
-  public readonly resolver: (request: Request, params: any) => Response
+  public readonly resolver: (request: Request, route: BackRoute) => Response
 
   public constructor(
-    url: string,
-    resolver: ((request: Request, params: any) => Response) | Response | any,
+    url: string | RegExp,
+    resolver:
+      | ((request: Request, route: BackRoute) => Response)
+      | Response
+      | any,
     params: any[] = []
   ) {
     super(url, params, 'back')
@@ -105,12 +119,20 @@ export class BackRoute extends Route {
       this.resolver = () => new Response(resolver)
     }
   }
+
+  public override isMatchingPathname(pathname: string): boolean {
+    return super.isMatchingPathname(pathname)
+  }
 }
 
 export class RedirectRoute extends Route {
   public readonly filePath: string
 
-  public constructor(url: string, filePath: string, params: any[] = []) {
+  public constructor(
+    url: string | RegExp,
+    filePath: string,
+    params: any[] = []
+  ) {
     super(url, params, 'redirect')
     this.filePath = filePath
   }
@@ -131,5 +153,9 @@ export class RedirectRoute extends Route {
   public override setPostHeaders(headers: HeadersType): RedirectRoute {
     super.setPostHeaders(headers)
     return this
+  }
+
+  public override isMatchingPathname(pathname: string): boolean {
+    return super.isMatchingPathname(pathname)
   }
 }

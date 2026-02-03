@@ -70,13 +70,16 @@ Used to return a simple any kind of response, be it JSON, txt or even html if yo
 
 ```ts
 import {BackRoute} from '@voldemortas/server/route'
-import {jsonHeaders} from '@voldemortas/server/utils'
+import {jsonHeaders, getRegexParams} from '@voldemortas/server/utils'
 
-export const backRoute = new BackRoute('/url', (req: Request, params: any) => {
+export const backRoute = new BackRoute('/url', (req: Request, route: BackRoute) => {
   return new Response(JSON.stringify(params), jsonHeaders)
 }, ['I am a parameter'])
 export const dateRoute = new BackRoute('/date', new Request({date: new Date().toISOString()}, jsonHeaders))
 export const pingRoute = new BackRoute('/ping', 'pong')
+export const parametrisedRoute = new BackRoute(/parametrised\/(\w+)/, (req: Request, route: BackRoute) => {
+  return new Response(JSON.stringify(getRegexParams(req, route)), jsonHeaders)
+})
 ```
 
 Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the content type being that of JSON. And visiting
@@ -87,10 +90,12 @@ Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the conte
 
 ```ts
 import {ReactRoute} from '@voldemortas/server/route'
+import {getRegexParams} from '@voldemortas/server/utils'
 
-export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx', (req: Request, params: any) => ({
+export const reactRoute = new ReactRoute(/\/react\/([\d]+)/, 'front/reactPage.tsx', (req: Request, route: ReactRoute) => ({
   h1: 'dis is h1',
-  text: params,
+  numericValue: getRegexParams(req, route)[1],
+  text: params[0],
 }), ['arg']).setPreHeaders({optional: 'true'}).setPostHeaders({'also-optional': 'true'})
 //.setPreHeaders().setPostHeaders() are optional
 // export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx',  {

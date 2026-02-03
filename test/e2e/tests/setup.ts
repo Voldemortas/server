@@ -1,6 +1,6 @@
-import {beforeAll, afterAll} from 'bun:test';
-import Watch from 'src/build/watch.ts';
-import routes from 'test/e2e/server/src/routes.ts';
+import {beforeAll, afterAll} from 'bun:test'
+import Watch from 'src/build/watch.ts'
+import routes from 'test/e2e/server/src/routes.ts'
 import {
   defaultHtml,
   devHtml,
@@ -11,8 +11,8 @@ import {
   outDir,
   rootDir,
   srcDir,
-  staticDir
-} from 'test/e2e/config.ts';
+  staticDir,
+} from 'test/e2e/config.ts'
 
 const watcher = new Watch(
   entryPoint,
@@ -25,11 +25,11 @@ const watcher = new Watch(
   defaultHtml,
   devHtml,
   globalScssOptions,
-  routes,
+  routes
 )
 
 function timeout(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 beforeAll(async () => {
@@ -37,9 +37,9 @@ beforeAll(async () => {
   await watcher.watch()
   await timeout(500)
   console.log('Watcher initiated')
-});
+})
 
 afterAll(async () => {
   console.log('exiting Watcher')
   await watcher.kill()
-});
+})

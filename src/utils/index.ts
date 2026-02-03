@@ -93,8 +93,17 @@ function getPage(
 ): Route {
   const {pathname} = getUrl(request)
   return conf.filter(
-    ({url, type}) => url === pathname && type === resolveType
+    (route) => route.type === resolveType && route.isMatchingPathname(pathname)
   )[0]
+}
+
+function getRegexParams(request: Request, route: Route): string[] {
+  if (typeof route.url === 'string') {
+    return []
+  }
+  const {pathname} = getUrl(request)
+  const regexArray = (route.url as RegExp).exec(pathname)
+  return regexArray ? [...regexArray] : []
 }
 
 const textHeaders = {headers: {'content-type': 'text/plain'}}
@@ -112,4 +121,5 @@ export {
   textHeaders,
   jsonHeaders,
   htmlHeaders,
+  getRegexParams,
 }

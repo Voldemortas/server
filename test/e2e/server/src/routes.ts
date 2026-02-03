@@ -1,5 +1,6 @@
 import {BackRoute, ReactRoute, Route, RedirectRoute} from 'src/route'
 import currentDate from './back/currentDate.ts'
+import {getRegexParams} from 'src/utils'
 
 const routes = [
   new BackRoute('/', (req: Request) => {
@@ -14,8 +15,33 @@ const routes = [
     h1: 'dis is h1',
     text: 'ik ben een tekst',
   }),
+  new ReactRoute(
+    /\/numericParam\/(\d+)/,
+    'front/h1.tsx',
+    (request: Request, route: ReactRoute) => {
+      const text = getRegexParams(request, route)[1]
+      return {
+        h1: 'dis is h1',
+        text,
+      }
+      //@ts-ignore
+    }
+  ),
   currentDate,
   new BackRoute('/ping', 'pong'),
+  new BackRoute(
+    '/bing',
+    (request: Request, route: BackRoute) => {
+      return new Response(route.params.join(''))
+    },
+    ['bang']
+  ),
+  new BackRoute(
+    /\/repeat\/([\w\s]+)$/,
+    (request: Request, route: BackRoute) => {
+      return new Response(getRegexParams(request, route)[1])
+    }
+  ),
   new RedirectRoute('/global.css', '/static/global.css', [
     'headers',
     '{"content-type": "text/css"}',

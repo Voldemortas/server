@@ -101,12 +101,12 @@ export default class Server {
         }
 
         for (const page of that.routes) {
-          if (page.url === pathname) {
+          if (page.isMatchingPathname(pathname)) {
             if (page.type === 'redirect') {
               return that.serveRedirect(request)
             }
             if (page.type === 'back') {
-              return (page as BackRoute).resolver(request, page.params)
+              return (page as BackRoute).resolver(request, page as BackRoute)
             }
             if (page.type === 'react') {
               return that.renderReact(
