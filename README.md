@@ -60,6 +60,14 @@ Then you are presented with 4 flags:
 You can then run commands like `bun run path/to/index.ts --watch` or `bun run path/to/index.ts --build --serve --prod`.
 Or define them as scripts in your `package.json`.
 
+### Static-Caching
+
+You can add static-caching (caching static react in memory) by having your `.env` file include
+
+```.dotenv
+CACHE=true
+```
+
 ### Routes
 
 Right now there are 3 kinds of routes:

@@ -4,7 +4,7 @@ import {outDir, devHtml, defaultHtml} from 'test/e2e/config.ts'
 
 const server = new Server({
   port: '9900',
-  routes: routes,
+  routes,
   staticPaths: [/^\/static\//, /^\/front\//],
   outDir,
   developmentHtml: devHtml,

@@ -3,10 +3,18 @@ import build from 'src/build/builder.ts'
 import serve from 'src/build/serve.ts'
 import reactRenderImpl from 'src/renderReact'
 import {BackRoute, RedirectRoute, type Route} from 'src/route'
-import {getConfigVars, getPage, getUrl, isProd, parseArgs} from 'src/utils'
+import {
+  getConfigVars,
+  getPage,
+  getUrl,
+  htmlHeaders,
+  isProd,
+  parseArgs,
+} from 'src/utils'
+import {$} from 'bun'
 
 const lastUpdated = new Date().getTime().toString()
-const {HASH, PORT, HOSTNAME} = getConfigVars()
+const {HASH, PORT, HOSTNAME, CACHE} = getConfigVars()
 const DEFAULT_HTML = import.meta.dir + '/default.html'
 const DEV_HTML = import.meta.dir + '/development.html'
 
@@ -29,6 +37,14 @@ export default class Server {
   ) => Promise<Response>
   private readonly replaceFn: (htmlContent: string) => string
   private server: undefined | Bun.Server<any>
+  private cashedRoutes: Record<
+    string,
+    {
+      status: 'visiting' | 'visited'
+      body: string | undefined
+      headers: Record<string, string> | undefined
+    }
+  > = {}
 
   constructor({
     port = PORT,
@@ -95,7 +111,7 @@ export default class Server {
           }
         }
 
-        const {pathname} = getUrl(request)
+        const {pathname, origin} = getUrl(request)
         if (that.staticPaths.filter((path) => path.test(pathname)).length > 0) {
           return await that.serveStatic(request)
         }
@@ -109,6 +125,11 @@ export default class Server {
               return (page as BackRoute).resolver(request, page as BackRoute)
             }
             if (page.type === 'react') {
+              const cachedResponse =
+                CACHE == 'true' && that.cacheReact(origin + pathname)
+              if (!!cachedResponse) {
+                return cachedResponse
+              }
               return that.renderReact(
                 request,
                 HASH ?? lastUpdated,
@@ -126,6 +147,29 @@ export default class Server {
     })
     this.server = server
     return this.server
+  }
+
+  private cacheReact(url: string) {
+    const cashedRoute = this.cashedRoutes[url]
+    if (!cashedRoute) {
+      this.cashedRoutes[url] = {
+        status: 'visiting',
+        body: undefined,
+        headers: undefined,
+      }
+
+      $`bunx chromium --headless --dump-dom ${url}`.quiet().then((value) => {
+        this.cashedRoutes[url] = {
+          status: 'visited',
+          body: value.text(),
+          headers: htmlHeaders.headers,
+        }
+      })
+    } else {
+      if (cashedRoute.status === 'visited') {
+        return new Response(cashedRoute.body, {headers: cashedRoute.headers})
+      }
+    }
   }
 
   private static makeRegexP(val: string | RegExp) {
