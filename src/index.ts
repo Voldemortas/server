@@ -112,6 +112,11 @@ export default class Server {
         }
 
         const {pathname, origin} = getUrl(request)
+        const cashedRoute = that.cashedRoutes[origin + pathname]
+        if (CACHE == 'true' && cashedRoute?.status === 'visited') {
+          return new Response(cashedRoute.body, {headers: cashedRoute.headers})
+        }
+
         if (that.staticPaths.filter((path) => path.test(pathname)).length > 0) {
           return await that.serveStatic(request)
         }
@@ -125,11 +130,7 @@ export default class Server {
               return (page as BackRoute).resolver(request, page as BackRoute)
             }
             if (page.type === 'react') {
-              const cachedResponse =
-                CACHE == 'true' && that.cacheReact(origin + pathname)
-              if (!!cachedResponse) {
-                return cachedResponse
-              }
+              that.cacheReact(origin + pathname)
               return that.renderReact(
                 request,
                 HASH ?? lastUpdated,
@@ -150,8 +151,7 @@ export default class Server {
   }
 
   private cacheReact(url: string) {
-    const cashedRoute = this.cashedRoutes[url]
-    if (!cashedRoute) {
+    if (CACHE == 'true' && !this.cashedRoutes[url]) {
       this.cashedRoutes[url] = {
         status: 'visiting',
         body: undefined,
@@ -165,10 +165,6 @@ export default class Server {
           headers: htmlHeaders.headers,
         }
       })
-    } else {
-      if (cashedRoute.status === 'visited') {
-        return new Response(cashedRoute.body, {headers: cashedRoute.headers})
-      }
     }
   }
 
