@@ -100,8 +100,8 @@ function getRegexParams(request: Request, route: Route): string[] {
   if (typeof route.url === 'string') {
     return []
   }
-  const {pathname} = getUrl(request)
-  const regexArray = (route.url as RegExp).exec(pathname)
+  const {href} = getUrl(request)
+  const regexArray = (route.url as RegExp).exec(href)
   return regexArray ? [...regexArray] : []
 }
 
