@@ -91,9 +91,8 @@ function getPage(
   resolveType: RouteType,
   conf: Route[]
 ): Route {
-  const {pathname} = getUrl(request)
   return conf.filter(
-    (route) => route.type === resolveType && route.isMatchingPathname(pathname)
+    (route) => route.type === resolveType && route.isMatchingRequest(request)
   )[0]
 }
 

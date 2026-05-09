@@ -29,6 +29,8 @@ const routes = [
   ),
   currentDate,
   new BackRoute('/ping', 'pong'),
+  new BackRoute('http://127.0.0.1:9900/zero', '127'),
+  new BackRoute(/http:\/\/0.0.0.0(:\d+)?\/zero/, '000'),
   new BackRoute(
     '/bing',
     (request: Request, route: BackRoute) => {

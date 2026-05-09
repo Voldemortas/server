@@ -1,4 +1,5 @@
 import type {OutgoingHttpHeaders} from 'node:http'
+import {getUrl} from 'src/utils'
 
 type HeadersType = {
   [K in keyof OutgoingHttpHeaders as string extends K
@@ -53,10 +54,19 @@ export abstract class Route {
     return {...this.postHeaders}
   }
 
-  public isMatchingPathname(pathname: string): boolean {
+  public isMatchingRequest(request: Request): boolean {
+    const {pathname, href} = getUrl(request)
+    const routeUrl =
+      typeof this.url === 'string'
+        ? this.url
+        : this.url.toString().replace(/^\/(.+)\/[dgimsuvy]*$/, '$1')
+    return this.isMatchingUrl(routeUrl[0] === '/' ? pathname : href)
+  }
+
+  private isMatchingUrl(url: string): boolean {
     return (
-      (typeof this.url === 'string' && this.url === pathname) ||
-      (this.url instanceof RegExp && this.url.test(pathname))
+      (typeof this.url === 'string' && this.url === url) ||
+      (this.url instanceof RegExp && this.url.test(url))
     )
   }
 }
@@ -94,8 +104,8 @@ export class ReactRoute extends Route {
     return this
   }
 
-  public override isMatchingPathname(pathname: string): boolean {
-    return super.isMatchingPathname(pathname)
+  public override isMatchingRequest(request: Request): boolean {
+    return super.isMatchingRequest(request)
   }
 }
 
@@ -120,8 +130,8 @@ export class BackRoute extends Route {
     }
   }
 
-  public override isMatchingPathname(pathname: string): boolean {
-    return super.isMatchingPathname(pathname)
+  public override isMatchingRequest(request: Request): boolean {
+    return super.isMatchingRequest(request)
   }
 }
 
@@ -155,7 +165,7 @@ export class RedirectRoute extends Route {
     return this
   }
 
-  public override isMatchingPathname(pathname: string): boolean {
-    return super.isMatchingPathname(pathname)
+  public override isMatchingRequest(request: Request): boolean {
+    return super.isMatchingRequest(request)
   }
 }

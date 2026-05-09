@@ -122,7 +122,7 @@ export default class Server {
         }
 
         for (const page of that.routes) {
-          if (page.isMatchingPathname(pathname)) {
+          if (page.isMatchingRequest(request)) {
             if (page.type === 'redirect') {
               return that.serveRedirect(request)
             }

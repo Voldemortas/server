@@ -20,6 +20,14 @@ describe('backend test', () => {
     const value = await (await fetch('http://localhost:9900/ping')).text()
     expect(value).toBe(PONG)
   })
+  it(`returns 127 on 127.0.0.1:9900/zero`, async () => {
+    const value = await (await fetch('http://127.0.0.1:9900/zero')).text()
+    expect(value).toBe('127')
+  })
+  it(`returns 000 on 0.0.0.1:9900/zero`, async () => {
+    const value = await (await fetch('http://0.0.0.0:9900/zero')).text()
+    expect(value).toBe('000')
+  })
   it(`returns pong on /bing`, async () => {
     const value = await (await fetch('http://localhost:9900/bing')).text()
     expect(value).toBe(BANG)

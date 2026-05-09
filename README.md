@@ -12,7 +12,7 @@ yourself:
 
 ## Requirements and installation
 
-The project requires `bun` (v1.3.1 and above), `sass`, `react` and `react-dom`.
+The project requires `bun` (v1.3.13 and above), `sass`, `react` and `react-dom`.
 
 To add it to your bun project run ` bunx jsr add @voldemortas/server; bun add react react-dom`.
 
@@ -80,14 +80,20 @@ Used to return a simple any kind of response, be it JSON, txt or even html if yo
 import {BackRoute} from '@voldemortas/server/route'
 import {jsonHeaders, getRegexParams} from '@voldemortas/server/utils'
 
-export const backRoute = new BackRoute('/url', (req: Request, route: BackRoute) => {
-  return new Response(JSON.stringify(params), jsonHeaders)
-}, ['I am a parameter'])
+export const backRoute = new BackRoute(
+  '/url',
+  (req: Request, route: BackRoute) => new Response(JSON.stringify(params), jsonHeaders),
+  ['I am a parameter']
+)
 export const dateRoute = new BackRoute('/date', new Request({date: new Date().toISOString()}, jsonHeaders))
 export const pingRoute = new BackRoute('/ping', 'pong')
-export const parametrisedRoute = new BackRoute(/parametrised\/(\w+)/, (req: Request, route: BackRoute) => {
-  return new Response(JSON.stringify(getRegexParams(req, route)), jsonHeaders)
-})
+export const parametrisedRoute = new BackRoute(
+  /\/parametrised\/(\w+)/,
+  (req: Request, route: BackRoute) => {
+    return new Response(JSON.stringify(getRegexParams(req, route)), jsonHeaders)
+  }
+)
+export const subdomainRoute = new BackRoute(/sub\..+\/pathname/, 'matches sub.example.com/pathname')
 ```
 
 Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the content type being that of JSON. And visiting
@@ -100,11 +106,18 @@ Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the conte
 import {ReactRoute} from '@voldemortas/server/route'
 import {getRegexParams} from '@voldemortas/server/utils'
 
-export const reactRoute = new ReactRoute(/\/react\/([\d]+)/, 'front/reactPage.tsx', (req: Request, route: ReactRoute) => ({
-  h1: 'dis is h1',
-  numericValue: getRegexParams(req, route)[1],
-  text: params[0],
-}), ['arg']).setPreHeaders({optional: 'true'}).setPostHeaders({'also-optional': 'true'})
+export const reactRoute = new ReactRoute(
+  /\/react\/([\d]+)/,
+  'front/reactPage.tsx',
+  (req: Request, route: ReactRoute) => ({
+    h1: 'dis is h1',
+    numericValue: getRegexParams(req, route)[1],
+    text: params[0],
+  }),
+  ['arg']
+)
+  .setPreHeaders({optional: 'true'})
+  .setPostHeaders({'also-optional': 'true'})
 //.setPreHeaders().setPostHeaders() are optional
 // export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx',  {
 //   h1: 'dis is h1',
@@ -121,7 +134,11 @@ as shown below in the commented section - you ain't usin' the `request` there an
 ```ts
 import {RedirectRoute} from '@voldemortas/server/route'
 
-export const redirectRoute = new RedirectRoute('/global.css', '/static/global.css', ['headers', '{"content-type": "text/css"}'])
+export const redirectRoute = new RedirectRoute(
+  '/global.css',
+  '/static/global.css',
+  ['headers', '{"content-type": "text/css"}']
+)
 // also equals to
 // new RedirectRoute('/global.css', '/static/global.css').setPreHeaders({'content-type': 'text/css'})
 // new RedirectRoute('/global.css', '/static/global.css').setPostHeaders({'content-type': 'text/css'})
